@@ -68,16 +68,16 @@ class TitleCrawler:
                         self.urls_to_be_visited.append(url)
 
     def update_positional_index(self, title, content, link):
-    # Extract terms and synonyms from the title/content
+        # Extract terms and synonyms from the title/content
         self.terms = set(title.split()) | set(content.split())
-        self.terms=preprocsess(self.terms)
+        self.terms = preprocsess(self.terms)
         self.synonyms = set()
         for term in self.terms:
             for syn in wordnet.synsets(term):
                 for lemma in syn.lemmas():
                     self.synonyms.add(lemma.name())
 
-    # Update the positional index
+        # Update the positional index
         for term in self.terms | self.synonyms:
             if term not in self.positional_index:
                 self.positional_index[term] = {}
@@ -91,6 +91,13 @@ class TitleCrawler:
         self.link_count += 1
         if self.link_count >= self.max_links:
             return
+
+        # Remove entries with empty dictionaries
+        empty_keys = [key for key, value in self.positional_index.items() if not value]
+        for key in empty_keys:
+            del self.positional_index[key]
+
+ 
 
 
     def retrieve_crawler_details(self):
@@ -333,7 +340,7 @@ search_engine.calculate_page_rank(iteration_count=50)
 
 import tkinter
 import tkinter.messagebox
-import customtkinter
+import customtkinter 
 
 # url = tkinter.StringVar(value='')
 # term = tkinter.StringVar(value='')
